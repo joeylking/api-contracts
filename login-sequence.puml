@@ -1,0 +1,23 @@
+@startuml
+actor       User       as user
+participant UI as ui
+participant Identity_Provider as idpro
+database    IDENTITY_DB    as iddb
+participant SS as ss
+database DB as db
+user -> ui : Login
+ui -> idpro : GET
+idpro -> iddb : Authentication
+alt success
+    iddb -> ui : JWT
+else fail
+    iddb -> ui: auth fail
+end
+user -> ui: access secured resource
+ui -> ss: Request (w/JWT)
+ss -> ss: validate JWT
+ss -> db: query
+db -> ss: data
+ss -> ui: formatted data
+ui -> user: present data
+@enduml
